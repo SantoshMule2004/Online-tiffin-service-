@@ -1,9 +1,13 @@
 package com.homeybites.payloads;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 public class FeedbackDto {
 	private Integer fId;
 	private String emailId;
 	private String description;
+	
+	@JsonBackReference
 	private UserDto user;
 	
 	public FeedbackDto() {

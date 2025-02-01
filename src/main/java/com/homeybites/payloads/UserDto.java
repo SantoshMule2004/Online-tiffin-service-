@@ -3,6 +3,8 @@ package com.homeybites.payloads;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -60,6 +62,7 @@ public class UserDto {
 	
 	private String userRole;
 	
+	@JsonManagedReference
 	private List<AddressDto> address = new ArrayList<>();
 	
 	private List<OrderInfoDto> orders = new ArrayList<>();
@@ -70,6 +73,7 @@ public class UserDto {
 	
 	private List<PaymentDto> payments = new ArrayList<>();
 	
+	@JsonManagedReference
 	private List<FeedbackDto> feedbacks = new ArrayList<>();
 	
 	

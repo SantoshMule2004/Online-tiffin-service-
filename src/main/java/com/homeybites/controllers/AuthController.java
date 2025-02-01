@@ -83,7 +83,7 @@ public class AuthController {
 			return new ResponseEntity<ApiResponse>(
 					new ApiResponse("email-verification OTP has sent to your email id (valid only for 5 minutes)", true,
 							null),
-					HttpStatus.CREATED);
+					HttpStatus.OK);
 		}
 
 		return new ResponseEntity<ApiResponse>(
@@ -109,7 +109,7 @@ public class AuthController {
 			userDto.setVerified(true);
 			UserDto registeredUser = this.userService.registerNewUser(userDto);
 			return new ResponseEntity<ApiResponse>(
-					new ApiResponse("Registeration successfully..!", true, registeredUser), HttpStatus.OK);
+					new ApiResponse("Registeration successfully..!", true, registeredUser), HttpStatus.CREATED);
 		}
 
 		return new ResponseEntity<ApiResponse>(new ApiResponse("OTP does not match..!", false, null),

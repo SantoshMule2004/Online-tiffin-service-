@@ -20,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import com.homeybites.Security.CustomUserDetailService;
 import com.homeybites.Security.JwtAuthenticationEntryPoint;
@@ -28,9 +29,14 @@ import com.homeybites.Security.JwtFilter;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
+	
 	@Autowired
-	private JwtFilter jwtFilter;
+	private HandlerExceptionResolver handlerExceptionResolver;
+
+	@Bean
+	protected JwtFilter jwtFilter() {
+		return new JwtFilter(handlerExceptionResolver);
+	}
 	
 	@Autowired
 	private JwtAuthenticationEntryPoint point;
@@ -50,7 +56,7 @@ public class SecurityConfig {
 				.exceptionHandling(ex->ex.authenticationEntryPoint(point))
 				.httpBasic(Customizer.withDefaults())
 				.sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.addFilterBefore(this.jwtFilter, UsernamePasswordAuthenticationFilter.class)
+				.addFilterBefore(this.jwtFilter(), UsernamePasswordAuthenticationFilter.class)
 				.build();
 	}
 

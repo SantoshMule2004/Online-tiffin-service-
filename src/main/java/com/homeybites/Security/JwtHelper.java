@@ -18,7 +18,7 @@ import io.jsonwebtoken.Jwts;
 @Component
 public class JwtHelper {
 	
-	private SecretKey SECRET_KEY;
+	private static SecretKey SECRET_KEY;
 	
     // directly using secretkey
 	public JwtHelper() throws NoSuchAlgorithmException
@@ -29,17 +29,14 @@ public class JwtHelper {
 
 	// generating JWT token
 	public String generateToken(String username) {
-
-		System.out.println("Generating token");
-
 		Map<String, Object> claims = new HashMap<>();
 		return Jwts.builder().claims().add(claims).subject(username).issuedAt(new Date(System.currentTimeMillis()))
-				.expiration(new Date(System.currentTimeMillis() + 60 * 60 * 1000)).and().signWith(get_key()).compact();
+				.expiration(new Date(System.currentTimeMillis() + 60 * 60 * 60)).and().signWith(get_key()).compact();
 	}
 
 	//generating secret key
 	private SecretKey get_key() {
-		return this.SECRET_KEY;
+		return JwtHelper.SECRET_KEY;
 	}
 	
 	
