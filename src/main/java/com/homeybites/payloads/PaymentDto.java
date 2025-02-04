@@ -8,7 +8,7 @@ public class PaymentDto {
 	private String paymentMethod;
 	private Date paymentDate;
 	private String paymentStatus;
-	private String amount;
+	private double amount;
 	private UserDto user;
 	private OrderInfoDto order;
 	
@@ -41,10 +41,10 @@ public class PaymentDto {
 	public void setPaymentStatus(String paymentStatus) {
 		this.paymentStatus = paymentStatus;
 	}
-	public String getAmount() {
+	public double getAmount() {
 		return amount;
 	}
-	public void setAmount(String amount) {
+	public void setAmount(double amount) {
 		this.amount = amount;
 	}
 	public UserDto getUser() {

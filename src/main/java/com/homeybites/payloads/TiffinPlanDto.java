@@ -1,6 +1,7 @@
 package com.homeybites.payloads;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class TiffinPlanDto {
@@ -8,9 +9,10 @@ public class TiffinPlanDto {
 	private Integer tiffinPlanId;
 	private String planName;
 	private String planType;
-	private String price;
+	private double price;
 	private String addOns;
 	private boolean isActive;
+	private Date createdAt;
 	
 	private OrderInfoDto order;
 	
@@ -22,7 +24,6 @@ public class TiffinPlanDto {
 	
 	public TiffinPlanDto() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	
 	public Integer getTiffinPlanId() {
@@ -43,10 +44,10 @@ public class TiffinPlanDto {
 	public void setPlanType(String planType) {
 		this.planType = planType;
 	}
-	public String getPrice() {
+	public double getPrice() {
 		return price;
 	}
-	public void setPrice(String price) {
+	public void setPrice(double price) {
 		this.price = price;
 	}
 	public String getAddOns() {
@@ -67,10 +68,10 @@ public class TiffinPlanDto {
 	public void setOrder(OrderInfoDto order) {
 		this.order = order;
 	}
-	public UserDto getUser() {
+	public UserDto getUserDto() {
 		return user;
 	}
-	public void setUser(UserDto user) {
+	public void setUserDto(UserDto user) {
 		this.user = user;
 	}
 	public List<MenuItemDto> getMenuItems() {
@@ -84,5 +85,11 @@ public class TiffinPlanDto {
 	}
 	public void setSubscriptions(List<SubscriptionDto> subscriptions) {
 		this.subscriptions = subscriptions;
+	}
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
 	}
 }

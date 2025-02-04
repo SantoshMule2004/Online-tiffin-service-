@@ -1,8 +1,6 @@
 package com.homeybites.entities;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -10,8 +8,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 
@@ -22,6 +18,9 @@ public class Subscription {
 	private Integer planId;
 	private Date startDate;
 	private Date endDate;
+	private double totalPrice;
+	private String status;
+	private Date createdAt;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id")
@@ -30,9 +29,9 @@ public class Subscription {
 	@OneToOne(mappedBy = "subscription", cascade = CascadeType.ALL)
 	private OrderInfo order;
 
-	@ManyToMany
-	@JoinTable(name = "subscription_tiffin", joinColumns = @JoinColumn(name = "sub_id"), inverseJoinColumns = @JoinColumn(name = "tiffin_id"))
-	private List<TiffinPlan> tiffinPlans = new ArrayList<>();
+	@ManyToOne
+	@JoinColumn(name = "tiffin_id")
+	private TiffinPlan tiffinPlan;
 
 	public Subscription() {
 		super();
@@ -79,11 +78,35 @@ public class Subscription {
 		this.order = order;
 	}
 
-	public List<TiffinPlan> getTiffinPlans() {
-		return tiffinPlans;
+	public double getTotalPrice() {
+		return totalPrice;
 	}
 
-	public void setTiffinPlans(List<TiffinPlan> tiffinPlans) {
-		this.tiffinPlans = tiffinPlans;
+	public void setTotalPrice(double totalPrice) {
+		this.totalPrice = totalPrice;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public TiffinPlan getTiffinPlan() {
+		return tiffinPlan;
+	}
+
+	public void setTiffinPlan(TiffinPlan tiffinPlan) {
+		this.tiffinPlan = tiffinPlan;
 	}
 }

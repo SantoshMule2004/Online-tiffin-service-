@@ -13,7 +13,7 @@ public class MenuItem {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer menuId;
 	private String menuName;
-	private String price;
+	private double price;
 	private String description;
 	private boolean isActive;
 	
@@ -42,10 +42,10 @@ public class MenuItem {
 	public void setMenuName(String menuName) {
 		this.menuName = menuName;
 	}
-	public String getPrice() {
+	public double getPrice() {
 		return price;
 	}
-	public void setPrice(String price) {
+	public void setPrice(double price) {
 		this.price = price;
 	}
 	public String getDescription() {

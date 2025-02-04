@@ -1,6 +1,7 @@
 package com.homeybites.entities;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -9,7 +10,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -22,9 +22,10 @@ public class TiffinPlan {
 	private Integer tiffinPlanId;
 	private String planName;
 	private String planType;
-	private String price;
+	private double price;
 	private String addOns;
 	private boolean isActive;
+	private Date createdAt;
 	
 	@OneToOne(mappedBy = "tiffinPlan", cascade = CascadeType.ALL)
 	private OrderInfo order;
@@ -36,12 +37,11 @@ public class TiffinPlan {
 	@OneToMany(mappedBy = "tiffinPlan", cascade = CascadeType.ALL)
 	private List<MenuItem> menuItems = new ArrayList<>();
 	
-	@ManyToMany(mappedBy = "tiffinPlans", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "tiffinPlan", cascade = CascadeType.ALL)
 	private List<Subscription> subscriptions = new ArrayList<>();
 	
 	public TiffinPlan() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	
 	public Integer getTiffinPlanId() {
@@ -62,10 +62,10 @@ public class TiffinPlan {
 	public void setPlanType(String planType) {
 		this.planType = planType;
 	}
-	public String getPrice() {
+	public double getPrice() {
 		return price;
 	}
-	public void setPrice(String price) {
+	public void setPrice(double price) {
 		this.price = price;
 	}
 	public String getAddOns() {
@@ -103,5 +103,11 @@ public class TiffinPlan {
 	}
 	public void setSubscriptions(List<Subscription> subscriptions) {
 		this.subscriptions = subscriptions;
+	}
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
 	}
 }

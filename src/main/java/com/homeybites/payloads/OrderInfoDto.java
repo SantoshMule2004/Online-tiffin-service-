@@ -7,7 +7,7 @@ public class OrderInfoDto {
 	private Integer orderId;
 	private String orderAddress;
 	private Date orderDate;
-	private String price;
+	private double price;
 	private String quantity;
 	private String orderStatus;
 	
@@ -39,10 +39,10 @@ public class OrderInfoDto {
 	public void setOrderDate(Date orderDate) {
 		this.orderDate = orderDate;
 	}
-	public String getPrice() {
+	public double getPrice() {
 		return price;
 	}
-	public void setPrice(String price) {
+	public void setPrice(double price) {
 		this.price = price;
 	}
 	public String getQuantity() {
