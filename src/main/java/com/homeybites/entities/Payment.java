@@ -28,8 +28,7 @@ public class Payment {
 	
 	@OneToOne(mappedBy = "payment", cascade = CascadeType.ALL)
 	private OrderInfo order;
-	
-	
+		
 	public Payment() {
 		super();
 		// TODO Auto-generated constructor stub

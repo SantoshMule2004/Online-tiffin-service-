@@ -19,6 +19,7 @@ import com.homeybites.payloads.ApiException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
+import jakarta.mail.internet.AddressException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -68,8 +69,16 @@ public class GlobalExceptionHandler {
 		ApiException response = new ApiException(message, false);
 		return new ResponseEntity<ApiException>(response, HttpStatus.UNAUTHORIZED);
 	}
-	
-	//Exception handlers for JWT token
+
+	// handler for wrong credentials
+	@ExceptionHandler(AddressException.class)
+	public ResponseEntity<ApiException> AddressExceptionHandler(AddressException ex) {
+		String message = ex.getMessage();
+		ApiException response = new ApiException(message, false);
+		return new ResponseEntity<ApiException>(response, HttpStatus.UNAUTHORIZED);
+	}
+
+	// Exception handlers for JWT token
 
 	// IllegalArgumentException handler
 	@ExceptionHandler(IllegalArgumentException.class)
@@ -82,7 +91,7 @@ public class GlobalExceptionHandler {
 	// handler for expired JWT token
 	@ExceptionHandler(ExpiredJwtException.class)
 	public ResponseEntity<ApiException> ExpiredJwtExceptionHandler(ExpiredJwtException ex) {
-		String message = ex.getMessage();
+//		String message = ex.getMessage();
 		ApiException response = new ApiException("JWT token expired..!", false);
 		return new ResponseEntity<ApiException>(response, HttpStatusCode.valueOf(498));
 	}
@@ -94,11 +103,11 @@ public class GlobalExceptionHandler {
 		ApiException response = new ApiException(message, false);
 		return new ResponseEntity<ApiException>(response, HttpStatus.UNAUTHORIZED);
 	}
-	
-	//handler JWT signature exception
+
+	// handler JWT signature exception
 	@ExceptionHandler(SignatureException.class)
 	public ResponseEntity<ApiException> SignatureExceptionHandler(SignatureException ex) {
-		String message = ex.getMessage();
+//		String message = ex.getMessage();
 		ApiException response = new ApiException("Invalid JWT token..!", false);
 		return new ResponseEntity<ApiException>(response, HttpStatusCode.valueOf(498));
 	}

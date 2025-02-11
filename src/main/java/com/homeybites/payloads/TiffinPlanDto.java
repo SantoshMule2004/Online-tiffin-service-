@@ -92,4 +92,10 @@ public class TiffinPlanDto {
 	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
 	}
+	public UserDto getUser() {
+		return user;
+	}
+	public void setUser(UserDto user) {
+		this.user = user;
+	}
 }

@@ -1,5 +1,6 @@
 package com.homeybites.controllers;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.homeybites.payloads.ApiResponse;
 import com.homeybites.payloads.MenuItemDto;
@@ -28,12 +31,20 @@ public class MenuController {
 	private MenuItemService menuItemService;
 
 	// add menu item controller
-	@PostMapping("/category/{cId}/menuitem/")
+	@PostMapping("/user/{userId}/category/{cId}/menuitem/")
 	public ResponseEntity<ApiResponse> addMenuItem(@Valid @RequestBody MenuItemDto menuItemDto,
-			@PathVariable Integer cId) {
-		MenuItemDto menuItem = this.menuItemService.addMenuItem(menuItemDto, cId);
+			@PathVariable Integer cId, @PathVariable Integer userId) {
+		MenuItemDto menuItem = this.menuItemService.addMenuItem(menuItemDto, cId, userId);
 		return new ResponseEntity<ApiResponse>(new ApiResponse("MenuItem added successfully..!", true, menuItem),
 				HttpStatus.CREATED);
+	}
+
+	// upload menu item image
+	@PostMapping("/menuitem/upload/{menuId}")
+	public ResponseEntity<?> uploadMenuImage(@RequestParam MultipartFile file, @PathVariable Integer menuId)
+			throws IOException {
+		MenuItemDto menuItemDto = this.menuItemService.UploadMenuImage(file, menuId);
+		return new ResponseEntity<>("Image uploaded successfully. " + menuItemDto.getImageUrl(), HttpStatus.OK);
 	}
 
 	// get menu item by id
@@ -44,7 +55,7 @@ public class MenuController {
 	}
 
 	// get all menu items
-	@GetMapping("/menuitem")
+	@GetMapping("/menuitems")
 	public ResponseEntity<List<MenuItemDto>> getAllMenuItems() {
 		List<MenuItemDto> allMenuItem = this.menuItemService.getAllMenuItem();
 		return new ResponseEntity<List<MenuItemDto>>(allMenuItem, HttpStatus.FOUND);
@@ -57,20 +68,34 @@ public class MenuController {
 		return new ResponseEntity<List<MenuItemDto>>(menuItems, HttpStatus.OK);
 	}
 
+	// get all menu items of a tiffin provider
+	@GetMapping("/tiffin-provider/{userId}/menuitems")
+	public ResponseEntity<List<MenuItemDto>> getMenuItemByTiffinProvider(@PathVariable Integer userId) {
+		List<MenuItemDto> menuItems = this.menuItemService.getMenuItemByTiffinProvider(userId);
+		return new ResponseEntity<List<MenuItemDto>>(menuItems, HttpStatus.OK);
+	}
+
+	// get all nearby menu items
+	@GetMapping("/nearby-menuitems")
+	public ResponseEntity<List<MenuItemDto>> getNearbyMenuItem(@RequestParam double lat, @RequestParam double lon) {
+		List<MenuItemDto> menuItems = this.menuItemService.getAllNearbyMenuItem(lat, lon);
+		return new ResponseEntity<List<MenuItemDto>>(menuItems, HttpStatus.OK);
+	}
+
 	// Update menu item
 	@PutMapping("/menuitem/{menuId}")
-	public ResponseEntity<MenuItemDto> updateMenuItem(@Valid @RequestBody MenuItemDto menuItemDto,
+	public ResponseEntity<ApiResponse> updateMenuItem(@Valid @RequestBody MenuItemDto menuItemDto,
 			@PathVariable Integer menuId) {
 		MenuItemDto updatedMenuItem = this.menuItemService.updateMenuItem(menuItemDto, menuId);
-		return new ResponseEntity<MenuItemDto>(updatedMenuItem, HttpStatus.OK);
+		return new ResponseEntity<ApiResponse>(
+				new ApiResponse("menuitem updated successfully.>!", true, updatedMenuItem), HttpStatus.OK);
 	}
 
 	// delete menu item
 	@DeleteMapping("/menuitem/{menuId}")
 	public ResponseEntity<ApiResponse> deleteMenuItem(@PathVariable Integer menuId) {
 		this.menuItemService.deleteMenuItem(menuId);
-		return new ResponseEntity<ApiResponse>(new ApiResponse("menuitem deleted successfully..!", true, null),
+		return new ResponseEntity<ApiResponse>(new ApiResponse("menuitem deleted successfully..!", true),
 				HttpStatus.OK);
 	}
-
 }

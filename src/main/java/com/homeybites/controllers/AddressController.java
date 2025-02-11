@@ -25,11 +25,21 @@ public class AddressController {
 	@Autowired
 	private AddressService addressService;
 
-	// add address
+	// add address of user
 	@PostMapping("/user/{userId}/address")
 	public ResponseEntity<ApiResponse> addAddress(@RequestBody AddressDto addressDto, @PathVariable Integer userId) {
 		System.out.println(userId);
 		AddressDto address = this.addressService.addAddress(addressDto, userId);
+		ApiResponse response = new ApiResponse("Address added successfully..!", true, address);
+		return new ResponseEntity<ApiResponse>(response, HttpStatus.CREATED);
+	}
+
+	// add address of tiffin provider
+	@PostMapping("/tiffin/{providerId}/address")
+	public ResponseEntity<ApiResponse> addTiffinProviderAddress(@RequestBody AddressDto addressDto,
+			@PathVariable Integer providerId) {
+		System.out.println(providerId);
+		AddressDto address = this.addressService.addTiffinProviderAddress(addressDto, providerId);
 		ApiResponse response = new ApiResponse("Address added successfully..!", true, address);
 		return new ResponseEntity<ApiResponse>(response, HttpStatus.CREATED);
 	}
@@ -53,7 +63,7 @@ public class AddressController {
 	public ResponseEntity<AddressDto> getSingleAddress(@PathVariable Integer userId, @PathVariable Integer addId) {
 		AddressDto addressDto = this.addressService.getSingleAddressOfUser(addId, userId);
 		return new ResponseEntity<AddressDto>(addressDto, HttpStatus.FOUND);
-	}	
+	}
 
 	// get all address
 	@GetMapping("/addresses")
@@ -74,7 +84,7 @@ public class AddressController {
 	@DeleteMapping("/address/{addId}")
 	public ResponseEntity<ApiResponse> deleteAddress(@PathVariable Integer addId) {
 		this.addressService.deleteAddress(addId);
-		ApiResponse response = new ApiResponse("Address deleted successfully..!", true, null);
+		ApiResponse response = new ApiResponse("Address deleted successfully..!", true);
 		return new ResponseEntity<ApiResponse>(response, HttpStatus.FOUND);
 	}
 
@@ -82,7 +92,7 @@ public class AddressController {
 	@DeleteMapping("/user/{userId}/address/{addId}")
 	public ResponseEntity<ApiResponse> deleteAddressOfUser(@PathVariable Integer addId, @PathVariable Integer userId) {
 		this.addressService.deleteAddressOfUser(addId, userId);
-		ApiResponse response = new ApiResponse("Address deleted successfully..!", true, null);
+		ApiResponse response = new ApiResponse("Address deleted successfully..!", true);
 		return new ResponseEntity<ApiResponse>(response, HttpStatus.FOUND);
 	}
 }

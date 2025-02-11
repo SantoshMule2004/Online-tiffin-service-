@@ -3,6 +3,7 @@ package com.homeybites.payloads;
 import java.time.LocalDateTime;
 
 public class OtpDto {
+	
 	private String otp;
 	private LocalDateTime expirationTime;
 	

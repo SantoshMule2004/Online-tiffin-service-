@@ -6,12 +6,15 @@ import com.homeybites.payloads.AddressDto;
 
 public interface AddressService {
 
-	// add address
+	// add address of user
 	AddressDto addAddress(AddressDto addressDto, Integer userId);
+
+	// add address of tiffin provider
+	AddressDto addTiffinProviderAddress(AddressDto addressDto, Integer providerId);
 
 	// get address
 	AddressDto getAddress(Integer addressId);
-	
+
 	// get single address of a user
 	AddressDto getSingleAddressOfUser(Integer addressId, Integer userId);
 
@@ -26,7 +29,7 @@ public interface AddressService {
 
 	// delete address
 	void deleteAddress(Integer addressId);
-	
-	//delete address of specific user
+
+	// delete address of specific user
 	void deleteAddressOfUser(Integer addressId, Integer userId);
 }

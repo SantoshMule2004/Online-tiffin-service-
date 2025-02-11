@@ -38,11 +38,11 @@ public class FeedbackController {
 		FeedbackDto feedbacksOfUser = this.feedbackService.getFeedbackOfUser(feedbackId, userId);
 		return new ResponseEntity<FeedbackDto>(feedbacksOfUser, HttpStatus.FOUND);
 	}
-	
+
 	// get feedbacks of user
-		@GetMapping("/user/{userId}/feedback")
-		public ResponseEntity<List<FeedbackDto>> getFeedbacksOfUser(@PathVariable Integer userId) {
-			List<FeedbackDto> allFeedbacksOfUser = this.feedbackService.getAllFeedbacksOfUser(userId);
-			return new ResponseEntity<List<FeedbackDto>>(allFeedbacksOfUser, HttpStatus.FOUND);
-		}
+	@GetMapping("/user/{userId}/feedback")
+	public ResponseEntity<List<FeedbackDto>> getFeedbacksOfUser(@PathVariable Integer userId) {
+		List<FeedbackDto> allFeedbacksOfUser = this.feedbackService.getAllFeedbacksOfUser(userId);
+		return new ResponseEntity<List<FeedbackDto>>(allFeedbacksOfUser, HttpStatus.FOUND);
+	}
 }

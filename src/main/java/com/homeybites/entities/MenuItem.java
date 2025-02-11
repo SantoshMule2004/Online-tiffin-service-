@@ -16,6 +16,9 @@ public class MenuItem {
 	private double price;
 	private String description;
 	private boolean isActive;
+	private String imagePublicId;
+	private String imageUrl;
+	private String format;
 	
 	@ManyToOne
 	@JoinColumn(name = "category_id")
@@ -24,6 +27,10 @@ public class MenuItem {
 	@ManyToOne
 	@JoinColumn(name = "tiffinPlan_id")
 	private TiffinPlan tiffinPlan;
+	
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User user;
 	
 	public MenuItem() {
 		super();
@@ -71,5 +78,29 @@ public class MenuItem {
 	}
 	public void setTiffinPlan(TiffinPlan tiffinPlan) {
 		this.tiffinPlan = tiffinPlan;
+	}
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
+	}
+	public String getImageUrl() {
+		return imageUrl;
+	}
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+	public String getImagePublicId() {
+		return imagePublicId;
+	}
+	public void setImagePublicId(String imagePublicId) {
+		this.imagePublicId = imagePublicId;
+	}
+	public String getFormat() {
+		return format;
+	}
+	public void setFormat(String format) {
+		this.format = format;
 	}
 }

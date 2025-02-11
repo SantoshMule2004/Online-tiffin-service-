@@ -72,8 +72,7 @@ public class UserDto {
 	private List<TiffinPlanDto> tiffinPlans = new ArrayList<>();
 	
 	private List<PaymentDto> payments = new ArrayList<>();
-	
-	@JsonManagedReference
+
 	private List<FeedbackDto> feedbacks = new ArrayList<>();
 	
 	
@@ -131,6 +130,7 @@ public class UserDto {
 	public void setDob(String dob) {
 		this.dob = dob;
 	}
+	
 	public String getPassword() {
 		return password;
 	}

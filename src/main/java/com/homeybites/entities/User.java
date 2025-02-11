@@ -29,7 +29,7 @@ public class User implements UserDetails{
 	@Column(nullable = false)
 	private String emailId;
 	
-	private boolean isVerified;
+	private boolean isVerified = false;
 	private String phoneNo;
 	private String dob;
 	private String password;
@@ -62,6 +62,8 @@ public class User implements UserDetails{
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<Feedback> feedbacks = new ArrayList<>();
 	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private List<MenuItem> menuItems = new ArrayList<>();
 	
 	public User() {
 		super();
@@ -153,24 +155,6 @@ public class User implements UserDetails{
 	public void setCompanyName(String companyName) {
 		this.companyName = companyName;
 	}
-	public String getBusinessName() {
-		return businessName;
-	}
-	public void setBusinessName(String businessName) {
-		this.businessName = businessName;
-	}
-	public String getFoodLicenseNo() {
-		return foodLicenseNo;
-	}
-	public void setFoodLicenseNo(String foodLicenseNo) {
-		this.foodLicenseNo = foodLicenseNo;
-	}
-	public String getGSTIN() {
-		return GSTIN;
-	}
-	public void setGSTIN(String gSTIN) {
-		GSTIN = gSTIN;
-	}
 	public List<String> getPermissions() {
 		return permissions;
 	}
@@ -219,6 +203,30 @@ public class User implements UserDetails{
 	}
 	public void setFeedbacks(List<Feedback> feedbacks) {
 		this.feedbacks = feedbacks;
+	}
+	public List<MenuItem> getMenuItems() {
+		return menuItems;
+	}
+	public void setMenuItems(List<MenuItem> menuItems) {
+		this.menuItems = menuItems;
+	}
+	public String getBusinessName() {
+		return businessName;
+	}
+	public void setBusinessName(String businessName) {
+		this.businessName = businessName;
+	}
+	public String getFoodLicenseNo() {
+		return foodLicenseNo;
+	}
+	public void setFoodLicenseNo(String foodLicenseNo) {
+		this.foodLicenseNo = foodLicenseNo;
+	}
+	public String getGSTIN() {
+		return GSTIN;
+	}
+	public void setGSTIN(String gSTIN) {
+		GSTIN = gSTIN;
 	}
 
 

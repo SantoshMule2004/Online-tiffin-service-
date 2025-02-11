@@ -12,6 +12,7 @@ import com.homeybites.entities.User;
 import com.homeybites.exceptions.ResourceNotFoundException;
 import com.homeybites.payloads.AddressDto;
 import com.homeybites.payloads.UserDto;
+import com.homeybites.payloads.UserRoles;
 import com.homeybites.repositories.AddressRepository;
 import com.homeybites.services.AddressService;
 import com.homeybites.services.UserService;
@@ -35,6 +36,20 @@ public class AddressServiceImpl implements AddressService {
 
 		Address address = this.modelMapper.map(addressDto, Address.class);
 		address.setUser(user);
+		address.setUserRoles(UserRoles.NORMAL_USER);
+		Address savedAddress = this.addressRepository.save(address);
+
+		return this.modelMapper.map(savedAddress, AddressDto.class);
+	}
+	
+	@Override
+	public AddressDto addTiffinProviderAddress(AddressDto addressDto, Integer providerId) {
+		UserDto userDto = this.userService.getUser(providerId);
+		User user = this.modelMapper.map(userDto, User.class);
+
+		Address address = this.modelMapper.map(addressDto, Address.class);
+		address.setUser(user);
+		address.setUserRoles(UserRoles.TIFFIN_PROVIDER);
 		Address savedAddress = this.addressRepository.save(address);
 
 		return this.modelMapper.map(savedAddress, AddressDto.class);
@@ -98,11 +113,10 @@ public class AddressServiceImpl implements AddressService {
 
 	@Override
 	public void deleteAddressOfUser(Integer addressId, Integer userId) {
-		Address address = this.addressRepository.findById(addressId)
+		this.addressRepository.findById(addressId)
 				.orElseThrow(() -> new ResourceNotFoundException("Address", "Id", addressId));
-		UserDto user = this.userService.getUser(userId);
+		this.userService.getUser(userId);
 		this.addressRepository.deleteAddressByUser(userId, addressId);
 		
 	}
-
 }

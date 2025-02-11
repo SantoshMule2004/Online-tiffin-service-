@@ -3,6 +3,7 @@ package com.homeybites.payloads;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class MenuItemDto {
 	
@@ -11,13 +12,19 @@ public class MenuItemDto {
 	@NotBlank(message = "menu cannot be empty..!")
 	private String menuName;
 	
-	@NotBlank(message = "Price cannot be empty..!")
+	@NotNull(message = "Price cannot be empty..!")
 	private double price;
 	
 	@NotBlank(message = "Description cannot be empty..!")
 	private String description;
 	
 	private boolean isActive;
+	
+	private String imagePublicId;
+	
+	private String imageUrl;
+	
+	private String format;
 	
 	@JsonIgnore
 	private CategoryDto category;
@@ -70,5 +77,23 @@ public class MenuItemDto {
 	}
 	public void setTiffinPlan(TiffinPlanDto tiffinPlan) {
 		this.tiffinPlan = tiffinPlan;
+	}
+	public String getImageUrl() {
+		return imageUrl;
+	}
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+	public String getImagePublicId() {
+		return imagePublicId;
+	}
+	public void setImagePublicId(String imagePublicId) {
+		this.imagePublicId = imagePublicId;
+	}
+	public String getFormat() {
+		return format;
+	}
+	public void setFormat(String format) {
+		this.format = format;
 	}
 }

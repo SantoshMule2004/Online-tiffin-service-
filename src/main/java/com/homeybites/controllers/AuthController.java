@@ -19,7 +19,6 @@ import com.homeybites.payloads.JwtResponse;
 import com.homeybites.payloads.UserDto;
 import com.homeybites.services.UserService;
 
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 @RestController
@@ -40,13 +39,23 @@ public class AuthController {
 	public ResponseEntity<JwtResponse> verifyUser(@Valid @RequestBody JwtRequest jwtRequest) {
 		this.doAuthenticate(jwtRequest.getUsername(), jwtRequest.getPassword());
 
-		String token = jwtHelper.generateToken(jwtRequest.getUsername());
+		String username = jwtRequest.getUsername();
+		UserDto userDto = this.userService.getUserByEmail(username);
 		JwtResponse response = new JwtResponse();
-		response.setMessage("User logged in successfully..!");
-		response.setStatus("success");
-		response.setToken(token);
 
-		return new ResponseEntity<JwtResponse>(response, HttpStatus.OK);
+		if (userDto.isVerified()) {
+			String token = jwtHelper.generateToken(jwtRequest.getUsername());
+			response.setMessage("User logged in successfully..!");
+			response.setStatus("success");
+			response.setToken(token);
+
+			return new ResponseEntity<JwtResponse>(response, HttpStatus.OK);
+
+		} else {
+			response.setMessage("Unable to login, email not verified..!");
+			response.setStatus("error");
+			return new ResponseEntity<JwtResponse>(response, HttpStatus.FORBIDDEN);
+		}
 
 	}
 
@@ -65,80 +74,114 @@ public class AuthController {
 
 	// new user register
 	@PostMapping("/register")
-	public ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody UserDto userDto, HttpSession session) {
+	public ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody UserDto userDto) {
 		boolean isPresent = this.userService.isUserPresent(userDto.getEmailId());
 
 		if (isPresent) {
-			return new ResponseEntity<ApiResponse>(new ApiResponse("User already exists..", false, null),
+			return new ResponseEntity<ApiResponse>(new ApiResponse("User already exists..", false),
 					HttpStatus.CONFLICT);
 		}
+
+		System.out.println("Password" + userDto.getPassword());
+		System.out.println("C Password" + userDto.getCpassword());
 
 		if (userDto.getPassword() != null && userDto.getCpassword() != null
 				&& userDto.getPassword().equals(userDto.getCpassword())) {
 
-			session.setAttribute("userDto", userDto);
-//			UserDto registeredUser = this.userService.saveUser(userDto);
-			this.userService.sendOtp(userDto.getEmailId());
+			UserDto registeredUser = this.userService.registerNewUser(userDto);
 
 			return new ResponseEntity<ApiResponse>(
 					new ApiResponse("email-verification OTP has sent to your email id (valid only for 5 minutes)", true,
-							null),
+							registeredUser),
 					HttpStatus.OK);
 		}
 
 		return new ResponseEntity<ApiResponse>(
-				new ApiResponse("Password and confirm password does not match..!", false, null),
-				HttpStatus.BAD_REQUEST);
+				new ApiResponse("Password and confirm password does not match..!", false), HttpStatus.BAD_REQUEST);
+	}
+
+	// register tiffin provider
+	@PostMapping("/tiffin-provider")
+	public ResponseEntity<ApiResponse> RegisterTiffinProvider(@RequestBody UserDto userDto) {
+
+		boolean isPresent = this.userService.isUserPresent(userDto.getEmailId());
+
+		if (isPresent) {
+			return new ResponseEntity<ApiResponse>(new ApiResponse("Email Id already exists..", false),
+					HttpStatus.CONFLICT);
+		}
+
+		// session.setAttribute("userDto", userDto);
+		// this.userService.sendOtp(userDto.getEmailId());
+
+		UserDto registerTiffinProvider = this.userService.registerTiffinProvider(userDto);
+
+		return new ResponseEntity<ApiResponse>(new ApiResponse("registered success", true, registerTiffinProvider),
+				HttpStatus.OK);
 	}
 
 	// verifying email through OTP
 	@PostMapping("/verify-email")
-	public ResponseEntity<ApiResponse> verifyEmail(@RequestParam String otp, HttpSession session) {
+	public ResponseEntity<ApiResponse> verifyEmail(@RequestParam String otp, @RequestParam String username) {
 
-		UserDto userDto = (UserDto) session.getAttribute("userDto");
+		UserDto userDto = this.userService.getUserByEmail(username);
 
 		if (otp.isEmpty())
 			return new ResponseEntity<ApiResponse>(
-					new ApiResponse("Please, enter the otp sent to your email id", false, null),
-					HttpStatus.BAD_REQUEST);
+					new ApiResponse("Please, enter the otp sent to your email Id", false), HttpStatus.BAD_REQUEST);
 
-		boolean verifiedOtp = this.userService.VerifyOtp(otp, userDto.getEmailId());
-		
+		boolean verifiedOtp = this.userService.VerifyOtp(otp, username);
+
 		if (verifiedOtp) {
-			session.removeAttribute("userDto");
 			userDto.setVerified(true);
-			UserDto registeredUser = this.userService.registerNewUser(userDto);
-			return new ResponseEntity<ApiResponse>(
-					new ApiResponse("Registeration successfully..!", true, registeredUser), HttpStatus.CREATED);
+			UserDto savedUser = this.userService.saveUser(userDto);
+			return new ResponseEntity<ApiResponse>(new ApiResponse("Registeration successfully..!", true, savedUser),
+					HttpStatus.CREATED);
 		}
 
-		return new ResponseEntity<ApiResponse>(new ApiResponse("OTP does not match..!", false, null),
-				HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<ApiResponse>(new ApiResponse("OTP does not match..!", false), HttpStatus.BAD_REQUEST);
 	}
 
 	// Re-sending OTP
 	@PostMapping("/resend-otp")
-	public ResponseEntity<ApiResponse> sendOtp(@RequestParam String username, HttpSession session) {
+	public ResponseEntity<ApiResponse> resendOtp(@RequestParam String username) {
 		this.userService.sendOtp(username);
-		session.setAttribute("username", username);
+
 		return new ResponseEntity<ApiResponse>(
-				new ApiResponse("OTP sent to your email-id successfully..! (validte for only 5 minutes.)", true, null),
+				new ApiResponse("OTP sent to your email-id successfully..! (validte for only 5 minutes.)", true),
 				HttpStatus.OK);
+	}
+
+	// verifying OTP
+	@PostMapping("/verify-otp")
+	public ResponseEntity<ApiResponse> verifyOtp(@RequestParam String otp, @RequestParam String username) {
+
+		if (otp.isEmpty())
+			return new ResponseEntity<ApiResponse>(
+					new ApiResponse("Please, enter the otp sent to your email Id", false), HttpStatus.BAD_REQUEST);
+
+		boolean verifiedOtp = this.userService.VerifyOtp(otp, username);
+
+		if (verifiedOtp) {
+			return new ResponseEntity<ApiResponse>(new ApiResponse("OTP verified successfully..!", true),
+					HttpStatus.CREATED);
+		}
+
+		return new ResponseEntity<ApiResponse>(new ApiResponse("OTP does not match..!", false), HttpStatus.BAD_REQUEST);
 	}
 
 	// forget-password
 	@PostMapping("/forget-password")
 	public ResponseEntity<ApiResponse> forgetPassword(@RequestParam String username) {
 		boolean userPresent = this.userService.isUserPresent(username);
-		
-		if(!userPresent) 
-			return new ResponseEntity<ApiResponse>(new ApiResponse("User does not exists with email id: "+username, false, null),
-					HttpStatus.CONFLICT);
-		
+
+		if (!userPresent)
+			return new ResponseEntity<ApiResponse>(
+					new ApiResponse("User does not exists with email id: " + username, false), HttpStatus.CONFLICT);
+
 		this.userService.sendOtp(username);
-		ApiResponse response = new ApiResponse("OTP sent to your email id (validate for 5 minutes", true, null);
-		
+		ApiResponse response = new ApiResponse("OTP sent to your email id (validate for 5 minutes", true);
+
 		return new ResponseEntity<ApiResponse>(response, HttpStatus.OK);
 	}
-	
 }

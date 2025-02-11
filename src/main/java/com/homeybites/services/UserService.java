@@ -3,14 +3,18 @@ package com.homeybites.services;
 import java.util.List;
 
 import com.homeybites.payloads.OtpDto;
+import com.homeybites.payloads.PasswordDto;
 import com.homeybites.payloads.UserDto;
 
 public interface UserService {
 	
 	//register new user
 	UserDto registerNewUser(UserDto userDto);
-	 
-	//creates new user
+	
+	//register tiffin provider
+	UserDto registerTiffinProvider(UserDto userDto);
+	
+	// save user
 	UserDto saveUser(UserDto userDto);
 	
 	//updates user
@@ -31,6 +35,9 @@ public interface UserService {
 	//get all users
 	List<UserDto> getAllUser();
 	
+	// get all user with role
+	List<UserDto> getUserByRole(String role);
+	
 	//delete user
 	void deleteUser(Integer userId);
 	
@@ -39,6 +46,9 @@ public interface UserService {
 	
 	//verifying email
 	boolean VerifyOtp(String enteredOtp, String username);
+	
+	// reset password
+	String resetPassword(PasswordDto passwordDto, UserDto userDto);
 	
 	//forget password
 	boolean forgetPassword(String username);

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.homeybites.entities.Address;
 import com.homeybites.entities.User;
+import com.homeybites.payloads.UserRoles;
 
 public interface AddressRepository extends JpaRepository<Address, Integer>{
 	
@@ -21,5 +22,8 @@ public interface AddressRepository extends JpaRepository<Address, Integer>{
 	//delete address of specific user
 	@Query(value = "delete from address where user_id = ? and add_id = ?", nativeQuery = true)
 	void deleteAddressByUser(Integer userId, Integer addId);
+	
+	// find address by user role
+	List<Address> findByUserRoles(UserRoles userRoles);
 }
 

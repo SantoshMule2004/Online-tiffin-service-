@@ -12,11 +12,11 @@ import org.springframework.stereotype.Service;
 import com.homeybites.entities.User;
 import com.homeybites.exceptions.ResourceNotFoundException;
 import com.homeybites.payloads.OtpDto;
+import com.homeybites.payloads.PasswordDto;
 import com.homeybites.payloads.UserDto;
 import com.homeybites.repositories.UserRepository;
 import com.homeybites.services.EmailService;
 import com.homeybites.services.UserService;
-
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -26,24 +26,35 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
 	@Autowired
 	private EmailService emailService;
-	
+
 	private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
-	
+
 	@Override
 	public UserDto registerNewUser(UserDto userDto) {
-		
+
 		User user = this.modelMapper.map(userDto, User.class);
 		user.setUserRole("NORMAL_USER");
 		user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-		User saveedUser = this.userRepository.save(user);
-		this.sendOtp(saveedUser.getEmailId());
-		
-		return this.modelMapper.map(saveedUser, UserDto.class);
+		User savedUser = this.userRepository.save(user);
+		this.sendOtp(savedUser.getEmailId());
+
+		return this.modelMapper.map(savedUser, UserDto.class);
 	}
 
+	@Override
+	public UserDto registerTiffinProvider(UserDto userDto) {
+		User user = this.modelMapper.map(userDto, User.class);
+		user.setUserRole("TIFFIN_PROVIDER");
+		user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+		User savedUser = this.userRepository.save(user);
+		// this.sendOtp(savedUser.getEmailId());
+
+		return this.modelMapper.map(savedUser, UserDto.class);
+	}
+	
 	@Override
 	public UserDto saveUser(UserDto userDto) {
 
@@ -63,12 +74,12 @@ public class UserServiceImpl implements UserService {
 		existingUser.setLastName(user.getLastName());
 		existingUser.setMiddleName(user.getMiddleName());
 		existingUser.setPhoneNo(user.getPhoneNo());
+		existingUser.setPassword(user.getPassword());
 		existingUser.setGender(user.getGender());
 		existingUser.setDob(user.getDob());
 		existingUser.setUniversityName(user.getUniversityName());
 		existingUser.setCourse(user.getCourse());
 		existingUser.setUniversityName(user.getUniversityName());
-		existingUser.setBusinessName(user.getBusinessName());
 		existingUser.setCompanyName(user.getCompanyName());
 		existingUser.setCourse(user.getCourse());
 
@@ -91,7 +102,7 @@ public class UserServiceImpl implements UserService {
 				.orElseThrow(() -> new ResourceNotFoundException("User", "Id", emailId));
 		return this.modelMapper.map(user, UserDto.class);
 	}
-	
+
 	@Override
 	public boolean isUserPresent(String username) {
 		boolean existsByEmailId = this.userRepository.existsByEmailId(username);
@@ -107,6 +118,14 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public List<UserDto> getUserByRole(String role) {
+		List<User> all = this.userRepository.findByUserRole(role);
+		List<UserDto> users = all.stream().map(user -> this.modelMapper.map(user, UserDto.class))
+				.collect(Collectors.toList());
+		return users;
+	}
+
+	@Override
 	public void deleteUser(Integer userId) {
 		User user = this.userRepository.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException("User", "Id", userId));
@@ -115,49 +134,69 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserDto updateContactDetails(UserDto userDto, Integer userId) {
-		
+
 		return null;
 	}
 
 	@Override
 	public boolean forgetPassword(String username) {
-		
+
 		return false;
 	}
 
 	@Override
 	public OtpDto sendOtp(String username) {
 		OtpDto otpDto = this.emailService.generateOtp();
-		
+
 		this.emailService.saveOtp(username, otpDto);
-		
+
 		String otp = otpDto.getOtp();
-		
+
 		String subject = "Email verification";
-		String message = "Your OTP for email verification for HomeBites is \n"+ otp;
-		
+		String message = "Your OTP for email verification for HomeyBites is \n" + otp;
+
 		this.emailService.sendEmail(username, subject, message);
-		
+
 		return otpDto;
 	}
 
 	@Override
 	public boolean VerifyOtp(String enteredOtp, String username) {
-		
+
 		OtpDto otpDto = this.emailService.getOtp(username);
-		
-		//checks if entered OTP is null or not 
-		if(enteredOtp.isEmpty())
+
+		// checks if entered OTP is null or not
+		if (enteredOtp.isEmpty())
 			return false;
-		
-		//checks if OTP is expired 
-		if(otpDto.getExpirationTime().isBefore(LocalDateTime.now()))
+
+		// checks if OTP is expired
+		if (otpDto.getExpirationTime().isBefore(LocalDateTime.now())) {
+			this.emailService.removeOtp(username);
 			return false;
-		
-		if(enteredOtp.equals(otpDto.getOtp())) {
+		}
+	
+		if (enteredOtp.equals(otpDto.getOtp())) {
 			this.emailService.removeOtp(username);
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public String resetPassword(PasswordDto passwordDto, UserDto userDto) {
+		if (passwordEncoder.matches(passwordDto.getOldPassword(), userDto.getPassword())) {
+
+			if (passwordDto.getNewPassword() != null && passwordDto.getcPassword() != null
+					&& passwordDto.getNewPassword().equals(passwordDto.getcPassword())) {
+				
+				userDto.setPassword(passwordEncoder.encode(passwordDto.getNewPassword()));
+				User user = this.modelMapper.map(userDto, User.class);
+				this.userRepository.save(user);
+				
+				return "Password updated successfully..!";
+			}
+			return "new password and confirm password does not match";
+		}
+		return "Wrong password..!";
 	}
 }

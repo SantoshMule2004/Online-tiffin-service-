@@ -1,6 +1,12 @@
 package com.homeybites.entities;
 
+import com.homeybites.payloads.UserRoles;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -18,13 +24,17 @@ public class Address {
 	private String city;
 	private String state;
 	private String country;
-	private String latitude;
-	private String longitude;
+	private double latitude;
+	private double longitude;
 	private String serviceRadius;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")
 	private User user;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "address_of")
+	private UserRoles userRoles;
 	
 	public Address() {
 		super();
@@ -67,16 +77,16 @@ public class Address {
 	public void setCountry(String country) {
 		this.country = country;
 	}
-	public String getLatitude() {
+	public double getLatitude() {
 		return latitude;
 	}
-	public void setLatitude(String latitude) {
+	public void setLatitude(double latitude) {
 		this.latitude = latitude;
 	}
-	public String getLongitude() {
+	public double getLongitude() {
 		return longitude;
 	}
-	public void setLongitude(String longitude) {
+	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
 	public String getServiceRadius() {
@@ -90,5 +100,13 @@ public class Address {
 	}
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public UserRoles getUserRoles() {
+		return userRoles;
+	}
+
+	public void setUserRoles(UserRoles userRoles) {
+		this.userRoles = userRoles;
 	}
 }

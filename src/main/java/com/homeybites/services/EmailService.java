@@ -3,20 +3,20 @@ package com.homeybites.services;
 import com.homeybites.payloads.OtpDto;
 
 public interface EmailService {
-	
-	//sending email
+
+	// sending email
 	void sendEmail(String to, String subject, String message);
-	
-	//generate OTP
+
+	// generate OTP
 	OtpDto generateOtp();
-	
-	//save OTP
+
+	// save OTP
 	void saveOtp(String key, OtpDto otpDto);
-	
-	//get OTP
+
+	// get OTP
 	OtpDto getOtp(String key);
-	
-	//delete OTP
+
+	// delete OTP
 	void removeOtp(String key);
-	
+
 }

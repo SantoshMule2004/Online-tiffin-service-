@@ -16,6 +16,17 @@ public class ApiResponse {
 		this.classObj = classObj;
 	}
 	
+	public ApiResponse(String message, boolean success) {
+		super();
+		this.message = message;
+		this.success = success;
+	}
+	
+	public ApiResponse(String message) {
+		super();
+		this.message = message;
+	}
+	
 	public String getMessage() {
 		return message;
 	}
