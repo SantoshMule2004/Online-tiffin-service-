@@ -44,7 +44,7 @@ public class MenuController {
 	public ResponseEntity<?> uploadMenuImage(@RequestParam MultipartFile file, @PathVariable Integer menuId)
 			throws IOException {
 		MenuItemDto menuItemDto = this.menuItemService.UploadMenuImage(file, menuId);
-		return new ResponseEntity<>("Image uploaded successfully. " + menuItemDto.getImageUrl(), HttpStatus.OK);
+		return new ResponseEntity<>("Image uploaded successfully..! " + menuItemDto.getImageUrl(), HttpStatus.OK);
 	}
 
 	// get menu item by id
@@ -58,7 +58,14 @@ public class MenuController {
 	@GetMapping("/menuitems")
 	public ResponseEntity<List<MenuItemDto>> getAllMenuItems() {
 		List<MenuItemDto> allMenuItem = this.menuItemService.getAllMenuItem();
-		return new ResponseEntity<List<MenuItemDto>>(allMenuItem, HttpStatus.FOUND);
+		return new ResponseEntity<List<MenuItemDto>>(allMenuItem, HttpStatus.OK);
+	}
+
+	// get all menu items
+	@GetMapping("/menuitems/type")
+	public ResponseEntity<List<MenuItemDto>> getAllMenuItemsByType(@RequestParam String menuType) {
+		List<MenuItemDto> allMenuItem = this.menuItemService.getAllMenuItemByType(menuType);
+		return new ResponseEntity<List<MenuItemDto>>(allMenuItem, HttpStatus.OK);
 	}
 
 	// get all menu items of a category

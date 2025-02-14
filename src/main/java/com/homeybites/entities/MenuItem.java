@@ -1,10 +1,14 @@
 package com.homeybites.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 
 @Entity
@@ -16,6 +20,7 @@ public class MenuItem {
 	private double price;
 	private String description;
 	private boolean isActive;
+	private String menuType;
 	private String imagePublicId;
 	private String imageUrl;
 	private String format;
@@ -24,9 +29,8 @@ public class MenuItem {
 	@JoinColumn(name = "category_id")
 	private Category category;
 	
-	@ManyToOne
-	@JoinColumn(name = "tiffinPlan_id")
-	private TiffinPlan tiffinPlan;
+	@ManyToMany(mappedBy = "menuItems")
+	private List<TiffinPlan> tiffinPlan = new ArrayList<>();
 	
 	@ManyToOne
 	@JoinColumn(name = "user_id")
@@ -73,10 +77,10 @@ public class MenuItem {
 	public void setCategory(Category category) {
 		this.category = category;
 	}
-	public TiffinPlan getTiffinPlan() {
+	public List<TiffinPlan> getTiffinPlan() {
 		return tiffinPlan;
 	}
-	public void setTiffinPlan(TiffinPlan tiffinPlan) {
+	public void setTiffinPlan(List<TiffinPlan> tiffinPlan) {
 		this.tiffinPlan = tiffinPlan;
 	}
 	public User getUser() {
@@ -102,5 +106,11 @@ public class MenuItem {
 	}
 	public void setFormat(String format) {
 		this.format = format;
+	}
+	public String getMenuType() {
+		return menuType;
+	}
+	public void setMenuType(String menuType) {
+		this.menuType = menuType;
 	}
 }

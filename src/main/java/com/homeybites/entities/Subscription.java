@@ -1,6 +1,8 @@
 package com.homeybites.entities;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -8,6 +10,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 
@@ -29,9 +33,9 @@ public class Subscription {
 	@OneToOne(mappedBy = "subscription", cascade = CascadeType.ALL)
 	private OrderInfo order;
 
-	@ManyToOne
-	@JoinColumn(name = "tiffin_id")
-	private TiffinPlan tiffinPlan;
+	@ManyToMany
+	@JoinTable(name = "subscription_tiffin", joinColumns = @JoinColumn(name = "subscription_id"), inverseJoinColumns = @JoinColumn(name = "tiffin_id"))
+	private List<TiffinPlan> tiffinPlan = new ArrayList<>();
 
 	public Subscription() {
 		super();
@@ -102,11 +106,11 @@ public class Subscription {
 		this.createdAt = createdAt;
 	}
 
-	public TiffinPlan getTiffinPlan() {
+	public List<TiffinPlan> getTiffinPlan() {
 		return tiffinPlan;
 	}
 
-	public void setTiffinPlan(TiffinPlan tiffinPlan) {
+	public void setTiffinPlan(List<TiffinPlan> tiffinPlan) {
 		this.tiffinPlan = tiffinPlan;
 	}
 }

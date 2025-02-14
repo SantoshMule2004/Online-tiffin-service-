@@ -50,11 +50,11 @@ public class AuthController {
 			response.setToken(token);
 
 			return new ResponseEntity<JwtResponse>(response, HttpStatus.OK);
-
 		} else {
 			response.setMessage("Unable to login, email not verified..!");
 			response.setStatus("error");
 			return new ResponseEntity<JwtResponse>(response, HttpStatus.FORBIDDEN);
+			
 		}
 
 	}
@@ -145,6 +145,12 @@ public class AuthController {
 	// Re-sending OTP
 	@PostMapping("/resend-otp")
 	public ResponseEntity<ApiResponse> resendOtp(@RequestParam String username) {
+		
+		UserDto userDto = this.userService.getUserByEmail(username);
+		if(userDto.isVerified())
+			return new ResponseEntity<ApiResponse>(new ApiResponse("Email already verified..!", true),
+				HttpStatus.CONFLICT);
+		
 		this.userService.sendOtp(username);
 
 		return new ResponseEntity<ApiResponse>(
@@ -173,14 +179,16 @@ public class AuthController {
 	// forget-password
 	@PostMapping("/forget-password")
 	public ResponseEntity<ApiResponse> forgetPassword(@RequestParam String username) {
+		
+		System.out.println(username);
 		boolean userPresent = this.userService.isUserPresent(username);
 
 		if (!userPresent)
 			return new ResponseEntity<ApiResponse>(
-					new ApiResponse("User does not exists with email id: " + username, false), HttpStatus.CONFLICT);
+					new ApiResponse("User does not exists with email id: " + username, false), HttpStatus.NOT_FOUND);
 
 		this.userService.sendOtp(username);
-		ApiResponse response = new ApiResponse("OTP sent to your email id (validate for 5 minutes", true);
+		ApiResponse response = new ApiResponse("OTP sent to your email id (validate for 5 minutes)", true);
 
 		return new ResponseEntity<ApiResponse>(response, HttpStatus.OK);
 	}

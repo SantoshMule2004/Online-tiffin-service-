@@ -176,4 +176,12 @@ public class MenuItemServiceImpl implements MenuItemService {
 
 		return radius * c;
 	}
+
+	@Override
+	public List<MenuItemDto> getAllMenuItemByType(String menuType) {
+		List<MenuItem> byMenuType = this.menuItemRepository.findByMenuType(menuType);
+		List<MenuItemDto> collect = byMenuType.stream()
+				.map(menuItem -> this.modelMapper.map(menuItem, MenuItemDto.class)).collect(Collectors.toList());
+		return collect;
+	}
 }

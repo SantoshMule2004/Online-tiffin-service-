@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -52,6 +53,7 @@ public class SecurityConfig {
 				.csrf(customizer->customizer.disable())
 				.cors(ccustomizer->ccustomizer.configurationSource(corsConfigurationSource()))
 				.authorizeHttpRequests(request->request.requestMatchers("/api/v1/auth/**").permitAll()
+				.requestMatchers(HttpMethod.GET).permitAll()
 				.anyRequest().authenticated())
 				.exceptionHandling(ex->ex.authenticationEntryPoint(point))
 				.httpBasic(Customizer.withDefaults())
@@ -79,7 +81,7 @@ public class SecurityConfig {
 		CorsConfiguration corsConfiguration = new CorsConfiguration();
 		
 		corsConfiguration.setAllowCredentials(true);
-		corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:5173"));;
+		corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
 		corsConfiguration.setAllowedHeaders(Arrays.asList("Autorization", "Content-Type", "Accept"));
 		corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 		corsConfiguration.setMaxAge(3600L);

@@ -10,8 +10,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
 @Entity
@@ -34,10 +35,11 @@ public class TiffinPlan {
 	@JoinColumn(name = "user_id")
 	private User user;
 	
-	@OneToMany(mappedBy = "tiffinPlan", cascade = CascadeType.ALL)
+	@ManyToMany
+	@JoinTable(name = "tiffin_menuitem", joinColumns = @JoinColumn(name = "tiffin_id"), inverseJoinColumns = @JoinColumn(name = "menu_id"))
 	private List<MenuItem> menuItems = new ArrayList<>();
 	
-	@OneToMany(mappedBy = "tiffinPlan", cascade = CascadeType.ALL)
+	@ManyToMany(mappedBy = "tiffinPlan")
 	private List<Subscription> subscriptions = new ArrayList<>();
 	
 	public TiffinPlan() {

@@ -27,6 +27,9 @@ public interface MenuItemService {
 	//get all menu items
 	List<MenuItemDto> getAllMenuItem();
 	
+	//get all menu items by menu type
+	List<MenuItemDto> getAllMenuItemByType(String menuType);
+	
 	// get all menu items within 5km radius of user
 	List<MenuItemDto> getAllNearbyMenuItem(double latitude, double longitude);
 	

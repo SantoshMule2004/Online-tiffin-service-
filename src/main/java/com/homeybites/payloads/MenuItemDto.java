@@ -1,5 +1,7 @@
 package com.homeybites.payloads;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.validation.constraints.NotBlank;
@@ -26,10 +28,12 @@ public class MenuItemDto {
 	
 	private String format;
 	
+	private String menuType;
+	
 	@JsonIgnore
 	private CategoryDto category;
 	
-	private TiffinPlanDto tiffinPlan;
+	private List<TiffinPlanDto> tiffinPlan;
 	
 	public MenuItemDto() {
 		super();
@@ -72,10 +76,10 @@ public class MenuItemDto {
 	public void setCategory(CategoryDto category) {
 		this.category = category;
 	}
-	public TiffinPlanDto getTiffinPlan() {
+	public List<TiffinPlanDto> getTiffinPlan() {
 		return tiffinPlan;
 	}
-	public void setTiffinPlan(TiffinPlanDto tiffinPlan) {
+	public void setTiffinPlan(List<TiffinPlanDto> tiffinPlan) {
 		this.tiffinPlan = tiffinPlan;
 	}
 	public String getImageUrl() {
@@ -95,5 +99,13 @@ public class MenuItemDto {
 	}
 	public void setFormat(String format) {
 		this.format = format;
+	}
+
+	public String getMenuType() {
+		return menuType;
+	}
+
+	public void setMenuType(String menuType) {
+		this.menuType = menuType;
 	}
 }
