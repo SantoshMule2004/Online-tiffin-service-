@@ -199,4 +199,19 @@ public class UserServiceImpl implements UserService {
 		}
 		return "Wrong password..!";
 	}
+
+	@Override
+	public String resetPass(PasswordDto passwordDto, UserDto userDto) {
+		
+			if (passwordDto.getNewPassword() != null && passwordDto.getcPassword() != null
+					&& passwordDto.getNewPassword().equals(passwordDto.getcPassword())) {
+				
+				userDto.setPassword(passwordEncoder.encode(passwordDto.getNewPassword()));
+				User user = this.modelMapper.map(userDto, User.class);
+				this.userRepository.save(user);
+				
+				return "Password updated successfully..!";
+			}
+			return "new password and confirm password does not match";
+	}
 }

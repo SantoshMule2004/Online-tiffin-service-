@@ -16,6 +16,7 @@ import com.homeybites.Security.JwtHelper;
 import com.homeybites.payloads.ApiResponse;
 import com.homeybites.payloads.JwtRequest;
 import com.homeybites.payloads.JwtResponse;
+import com.homeybites.payloads.PasswordDto;
 import com.homeybites.payloads.UserDto;
 import com.homeybites.services.UserService;
 
@@ -54,7 +55,7 @@ public class AuthController {
 			response.setMessage("Unable to login, email not verified..!");
 			response.setStatus("error");
 			return new ResponseEntity<JwtResponse>(response, HttpStatus.FORBIDDEN);
-			
+
 		}
 
 	}
@@ -145,12 +146,12 @@ public class AuthController {
 	// Re-sending OTP
 	@PostMapping("/resend-otp")
 	public ResponseEntity<ApiResponse> resendOtp(@RequestParam String username) {
-		
+
 		UserDto userDto = this.userService.getUserByEmail(username);
-		if(userDto.isVerified())
+		if (userDto.isVerified())
 			return new ResponseEntity<ApiResponse>(new ApiResponse("Email already verified..!", true),
-				HttpStatus.CONFLICT);
-		
+					HttpStatus.CONFLICT);
+
 		this.userService.sendOtp(username);
 
 		return new ResponseEntity<ApiResponse>(
@@ -179,7 +180,7 @@ public class AuthController {
 	// forget-password
 	@PostMapping("/forget-password")
 	public ResponseEntity<ApiResponse> forgetPassword(@RequestParam String username) {
-		
+
 		System.out.println(username);
 		boolean userPresent = this.userService.isUserPresent(username);
 
@@ -191,5 +192,16 @@ public class AuthController {
 		ApiResponse response = new ApiResponse("OTP sent to your email id (validate for 5 minutes)", true);
 
 		return new ResponseEntity<ApiResponse>(response, HttpStatus.OK);
+	}
+
+	// reset password after forget
+	@PostMapping("/reset-pass")
+	public ResponseEntity<ApiResponse> ResetPasswordAfterVerificationHandler(
+			@Valid @RequestBody PasswordDto passwordDto, @RequestParam String emailId) {
+
+		UserDto userDto = this.userService.getUserByEmail(emailId);
+
+		String response = this.userService.resetPass(passwordDto, userDto);
+		return new ResponseEntity<ApiResponse>(new ApiResponse(response), HttpStatus.OK);
 	}
 }
